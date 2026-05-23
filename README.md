@@ -1,0 +1,1 @@
+# snowflake-ingestion-aws-lambda-terraform
