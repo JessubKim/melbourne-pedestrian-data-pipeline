@@ -50,3 +50,4 @@ dist/
 # Local configuration and secrets
 .env
 local_settings.py
+terraform/environments/prod/builds/
