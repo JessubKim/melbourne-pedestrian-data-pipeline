@@ -1,0 +1,52 @@
+# Local .terraform directory (contains binaries and plugins)
+.terraform/
+
+# .tfstate files (contain sensitive data and secrets in cleartext)
+*.tfstate
+*.tfstate.*
+
+# Crash log files
+crash.log
+crash.*.log
+
+# Exclude all .tfvars files (often contain secrets/credentials)
+*.tfvars
+*.tfvars.json
+
+# Ignore override files
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+
+# Ignore CLI configuration files
+.terraformrc
+terraform.rc
+
+# Ignore transient lock info files
+.terraform.tfstate.lock.info
+
+# Ignore plan output files
+*tfplan*
+
+# PyCharm / JetBrains IDE files
+.idea/
+*.iml
+cmake-build-*/
+out/
+
+# Python artifacts
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+build/
+dist/
+
+# Local configuration and secrets
+.env
+local_settings.py
