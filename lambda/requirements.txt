@@ -1,0 +1,4 @@
+snowflake-connector-python[pandas]
+boto3
+pandas
+botocore[crt]

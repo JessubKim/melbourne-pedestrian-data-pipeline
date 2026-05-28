@@ -11,6 +11,24 @@ locals {
   lambda_source_path = "${path.module}/../../../lambda"
 }
 
+module "lambda_layer_python_packages" {
+  source  = "terraform-aws-modules/lambda/aws"
+  version = "~> 8.0"
+
+  create_layer = true
+
+  layer_name          = "pedestrian-snowflake-connector-python"
+  description         = "Lambda layer containing snowflake-connector-python"
+  compatible_runtimes = ["python3.12"]
+
+  source_path = [
+    {
+      path             = "${path.module}/../../../lambda/requirements.txt"
+      pip_requirements = true
+    }
+  ]
+}
+
 module "eventbridge" {
   source = "../../modules/eventbridge"
 
@@ -19,14 +37,14 @@ module "eventbridge" {
   rules = {
     pedestrian_poll = {
       description         = "Poll Melbourne pedestrian counting API every minute"
-      schedule_expression = "rate(1 minute)"
+      schedule_expression = "rate(15 minute)"
     }
   }
 
   targets = {
     pedestrian_poll = [
       {
-        name = "pedestrian-api-poller"
+        name = "pedestrian-api-to-snowflake-pipeline"
         arn  = module.lambda.lambda_function_arn
       }
     ]
@@ -54,4 +72,8 @@ module "lambda" {
       source_arn = module.eventbridge.eventbridge_rule_arns["pedestrian_poll"]
     }
   }
+
+  layers = [
+    module.lambda_layer_python_packages.lambda_layer_arn,
+  ]
 }
