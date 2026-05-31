@@ -1,0 +1,1 @@
+docker run --env-file .env.local -p 9000:8080 lt

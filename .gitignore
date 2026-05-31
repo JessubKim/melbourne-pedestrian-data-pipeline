@@ -51,3 +51,5 @@ dist/
 .env
 local_settings.py
 terraform/environments/prod/builds/
+
+.env.local

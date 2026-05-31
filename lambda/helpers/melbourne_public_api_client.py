@@ -30,7 +30,7 @@ def fetch_counts_per_min(location_id: int, sensing_datetime_gt: datetime) -> dic
 
     where_filter = quote(f"location_id={location_id} AND sensing_datetime > date'{sensing_datetime_gt.isoformat()}'")
     order_filter = quote("sensing_datetime ASC")
-    limit = 60*24 # 60 mins x 24 hours = 1440
+    limit = 100 # max limit by API
 
     url = f"{ROOT_API_URL}/{relative_url}?where={where_filter}&order_by={order_filter}&limit={limit}"
 
@@ -40,7 +40,7 @@ def fetch_counts_per_min(location_id: int, sensing_datetime_gt: datetime) -> dic
         with urlopen(request, timeout=30) as response:
             return json.loads(response.read().decode("utf-8"))
     except HTTPError as exc:
-        logger.error("HTTP %s from %s", exc.code, url)
+        logger.error("HTTPError %s from %s\nReason: %s", exc.code, url, exc.read().decode())
         raise
     except URLError as exc:
         logger.error("Request failed for %s: %s", url, exc.reason)

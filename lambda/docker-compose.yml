@@ -1,0 +1,16 @@
+version: "3.9"
+
+services:
+  lambda:
+    build:
+      context: .
+      dockerfile: Dockerfile      
+    image: melbourne-pedestrian-lambda:local
+    ports:
+      # Host : Container (Lambda Runtime Interface Emulator listens on 8080)
+      - "9000:8080"
+    # Optionally load AWS and app-specific env vars from a local file
+    # (e.g. AWS_REGION, AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, PEDESTRIAN_API_URL, etc.)
+    # Create .env.local (gitignored) alongside this file if desired.
+    env_file:
+      - .env.local
