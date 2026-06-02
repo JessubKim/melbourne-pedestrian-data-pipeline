@@ -1,0 +1,6 @@
+# Bridges `aws login` (login_session) credentials to Terraform via the AWS CLI.
+# The Terraform AWS provider does not read ~/.aws/login/cache directly.
+# Run `aws login` before plan/apply. Override the source profile with AWS_LOGIN_PROFILE.
+[profile melbourne-pedestrian]
+credential_process = /bin/sh -c "AWS_CONFIG_FILE=$HOME/.aws/config AWS_SHARED_CREDENTIALS_FILE=$HOME/.aws/credentials aws configure export-credentials --profile ${AWS_LOGIN_PROFILE:-default} --format process"
+region = us-east-2

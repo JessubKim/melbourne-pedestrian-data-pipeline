@@ -4,13 +4,45 @@ Configuration in this directory creates EventBridge resource configuration inclu
 
 ## Usage
 
-To run this example you need to execute:
+### AWS credentials
+
+This stack expects AWS credentials from [`aws login`](https://aws.amazon.com/blogs/security/simplified-developer-access-to-aws-with-aws-login/) (or any profile that `aws configure export-credentials` can read). Terraform does not use `login_session` / `~/.aws/login/cache` directly, so the provider uses a `credential_process` bridge in [`aws-config`](aws-config).
+
+Before plan or apply:
 
 ```bash
-$ terraform init
-$ terraform plan
-$ terraform apply
+aws login   # refresh if your session expired
 ```
+
+For CI or long-lived keys, use the default credential chain instead of the bridge profile:
+
+```bash
+export AWS_ACCESS_KEY_ID=...
+export AWS_SECRET_ACCESS_KEY=...
+terraform plan -var='aws_profile='
+```
+
+If your login profile is not `default`, set `AWS_LOGIN_PROFILE` when running Terraform.
+
+### Terraform
+
+```bash
+terraform init
+terraform plan
+terraform apply
+```
+
+If apply fails with `Function already exist` after a partial or failed apply, the Lambda may be tainted in state while it already exists in AWS. Refresh and adopt it:
+
+```bash
+terraform untaint 'module.lambda.aws_lambda_function.this[0]'
+terraform plan -out=tfplan
+terraform apply tfplan
+```
+
+The Lambda container image is built locally during apply via the Docker provider (`terraform/modules/docker-build-lambda`). Builds disable BuildKit provenance/SBOM attestations so ECR receives a single Docker v2 manifest (required by Lambda; OCI image indexes fail with `InvalidParameterValueException`).
+
+On Linux with Docker Desktop, Terraform auto-detects `~/.docker/desktop/docker.sock` (the CLI default context). On a native Docker Engine host, your user must be in the `docker` group, or set `-var='docker_host=unix:///var/run/docker.sock'` if you use a non-default socket.
 
 Note that this example may create resources which cost money. Run `terraform destroy` when you don't need these resources.
 

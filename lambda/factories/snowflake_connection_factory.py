@@ -30,7 +30,5 @@ class SnowflakeConnectionFactory:
             account=self.credentials["account"],
             private_key=self.credentials["privateKey"] if "privateKey" in self.credentials else None,
             password=self.credentials.get("password"),
-            warehouse=self.credentials.get("warehouse"),
-            database=self.database_name,
-            schema=self.schema_name
+            warehouse=self.credentials.get("warehouse")
         )
